@@ -34,21 +34,17 @@ void d_mainmenu();
 void display(rec *,int,int);
 void window(int,int,int,int);
 void dis_con();
-void d_search();
 void highlight(int,int);
 
 /*declaration of main menu functions*/
 void bill() ;
-void edit();
 void add();
-void del();
 void exit();
 
 /*declaration of display submenu functions*/
 void d_code();
 void d_rate();
 void d_quan();
-void d_all();
 
 /*start of main*/
 int main()
@@ -61,7 +57,7 @@ void d_mainmenu()
 {
     int i;
     char ch;
-    const char *menu[]= {"   Calculate Bill","   Add Goods","   Edit Goods","   Display All ","   Search", "   Delete Goods","   Exit"};
+    const char *menu[]= {"   Calculate Bill","   Add Medicine","   Edit Medicine","   Display All ","   Search", "   Delete Medicine","   Exit"};
     system("cls");
     window(25,50,20,32);
     gotoxy(33,18);
@@ -74,23 +70,6 @@ void d_mainmenu()
     curser(7);
 }
 
-void d_search()
-{
-    char ch;
-    int i;
-    const char *menu[]= {"   By Code","   By Rate","   By Quantity","   Back to main menu"};
-    system("cls");
-
-    window(25,50,20,32);
-    gotoxy(33,18);
-    printf("SEARCH MENU");
-    for (i=0; i<=3; i++)
-    {
-        gotoxy(30,22+i+1);
-        printf("%s\n\n\n",menu[i]);
-    }
-    curser(4);
-}
 
 /*function for cursor movement*/
 void curser(int no)
@@ -119,19 +98,9 @@ void curser(int no)
             {
                 if (count==1) bill() ;
                 else if(count==2) add();
-                else if(count==3) edit();
-                else if (count==4) d_all();
-                else if (count==5) d_search();
-                else if (count==6) del();
                 else   exit(0);
             }
-            if(no==4)
-            {
-                if (count==1) d_code();
-                else if (count==2)d_rate();
-                else if (count==3) d_quan();
-                else d_mainmenu();
-            }
+
         }
     }
 }
@@ -174,18 +143,7 @@ void highlight(int no,int count)
         gotoxy (30,23);
         printf("   Calculate Bill ");
         gotoxy (30,24);
-        printf("   Add Goods      ");
-        gotoxy (30,25);
-        printf("   Edit Goods     ");
-        gotoxy (30,26);
-        printf("   Display All    ");
-        gotoxy (30,27);
-        printf("   Search         ");
-        gotoxy (30,28);
-        printf("   Delete Goods   ");
-        gotoxy (30,29);
-        printf("   Exit           ");
-
+        printf("   Add Medicine      ");
         switch(count)
         {
         case 1:
@@ -194,29 +152,9 @@ void highlight(int no,int count)
             break;
         case 2:
             gotoxy (30,24);
-            printf(" - Add Goods      ");
+            printf(" - Add Medicine      ");
             break;
-        case 3:
-            gotoxy (30,25);
-            printf(" - Edit Goods     ");
-            break;
-        case 4:
-            gotoxy (30,26);
-            printf(" - Display All    ");
-            break;
-        case 5:
-            gotoxy (30,27);
-            printf(" - Search         ");
-            break;
-        case 6:
-            gotoxy (30,28);
-            printf(" - Delete Goods   ");
-            break;
-        case 7:
-            gotoxy (30,29);
-            printf(" - Exit           ");
-            break;
-        }
+          }
     }
 }
 
@@ -290,7 +228,7 @@ void dbill()
         printf("*");
     printf("\n\n");
     gotoxy(30,11);
-    printf("Departmental Store");
+    printf("Medical Store");
 
     gotoxy(32,25);
     printf("CUSTOMER'S BILL") ;
@@ -366,288 +304,6 @@ void c_code(char y[])
     }
 }
 
-/*function for editing*/
-void edit()
-{
-    int flag=0,choice;
-    char x[ACS],y[ACS];
-    FILE *file;
-    int size;
-    system("cls");
-    window(20,63,20,46);
-    gotoxy(35,18);
-    printf("EDIT RECORDS");
-    ;
-    gotoxy(25,23);
-    printf("enter item code: ");
-    scanf("%s",x);
-    flag=check(x);
-    if(flag==0)
-    {
-        file=fopen("record.txt","r+b");
-        rewind(file);
-        while (fread(&item,sizeof (item),1,file))
-        {
-            if(strcmp(item.code,x)==0)
-            {
-                gotoxy(25,27);
-                printf("name       = %s",item.name);
-                gotoxy(25,28);
-                printf("code       = %s",item.code);
-                gotoxy(25,29);
-                printf("rate       = %g",item.rate);
-                gotoxy(25,30);
-                printf("quantity   = %d",item.quantity);
-                gotoxy(25,32);;
-                printf("Do you want to edit this record?(y/n):");
-                fflush(file);
-                if(toupper(getche())=='Y')
-                {
-                    gotoxy(25,34);
-                    printf("1- edit name ");
-                    gotoxy(25,35);
-                    printf("2- edit code ");
-                    gotoxy(25,36);
-                    printf("3- edit rate ");
-                    gotoxy(25,37);
-                    printf("4- edit quantity ");
-                    gotoxy(25,39);  ;
-                    printf(" enter your choice(1, 2, 3, 4) ");
-                    scanf("%d",&choice);
-                    switch(choice)
-                    {
-                    case 1:
-                        system("cls");
-                        window(23,48,20,40);
-                        gotoxy(35,18);
-                        printf("EDIT RECORDS");
-                        gotoxy(25,24);
-                        printf(" enter new name: ");
-                        scanf("%s",item.name);
-                        size=sizeof(item);
-                        fseek(file,-size,SEEK_CUR);
-                        fwrite(&item,sizeof(item),1,file);
-                        break;
-                    case 2:
-                        system("cls");
-                        window(23,65,20,40);
-                        gotoxy(35,18);
-                        printf("EDIT RECORDS");
-                        gotoxy(25,24);
-                        c_code(y);
-                        strcpy(item.code,y);
-                        size=sizeof(item);
-                        fseek(file,-size,SEEK_CUR);
-                        fwrite(&item,sizeof(item),1,file);
-                        break;
-                    case 3:
-                        system("cls");
-                        window(23,65,20,40);
-                        gotoxy(35,18);
-                        printf("EDIT RECORDS");
-                        gotoxy(25,24);
-                        printf(" enter new rate: ");
-                        scanf("%f",&item.rate);
-                        size=sizeof(item);
-                        fseek(file,-size,SEEK_CUR);
-                        fwrite(&item,sizeof(item),1,file);
-                        break;
-                    case 4:
-                        system("cls");
-                        window(23,65,20,40);
-                        gotoxy(35,18);
-                        printf("EDIT RECORDS");
-                        gotoxy(25,24);
-                        printf(" enter new quantity: ");
-                        scanf("%d",&item.quantity);
-                        size=sizeof(item);
-                        fseek(file,-size,1);
-                        fwrite(&item,sizeof(item),1,file);
-                        break;
-                    }
-                    gotoxy(27,30);
-                    printf("--- item edited---");
-                    break;
-                }
-            }
-        }
-    }
-    if (flag==1)
-    {
-        gotoxy(32,30);
-        printf("Item does not exist.");
-        gotoxy(36,32);
-        printf("TRY ABGAIN");
-    }
-    getch();
-    fclose(file);
-    d_mainmenu();
-}
-
-/*function to display all records*/
-void d_all()
-{
-    int i,j=1;
-    FILE *file;
-    dis_con();
-    file=fopen("record.txt","rb");
-    rewind(file);
-    i=26;
-    fflush(file);
-    while(fread(&item,sizeof(item),1,file))
-    {
-        display(&item,i,j);
-        i++;
-        j++;
-        if ((j%20)==0)
-        {
-            gotoxy(27,47);/*textcolor(0)*/;
-            printf("Press any key to see more...........");
-            getch();
-            system("cls");
-            dis_con();
-            i=26;
-            continue;
-        }
-    }
-    getch();
-    if (i==26)
-    {
-        gotoxy(24,30);
-        printf("-- no articles found --");
-    }
-    getch();
-    fclose(file);
-    d_mainmenu();
-}
-
-/*function to display by quantity*/
-void d_quan()
-{
-    int i,j=1;
-    int a,b;
-    FILE *file;
-    dis_con();
-    file=fopen("record.txt","rb");
-    rewind(file);
-    i=26;
-    gotoxy(16,20);;
-    printf("Enter lower range: ");
-    scanf("%d",&a);
-    gotoxy(16,21);
-    printf("Enter upper range:");
-    scanf("%d",&b);
-    fflush(file);
-    while(fread(&item,sizeof(item),1,file))
-    {
-        if((item.quantity>=a)&&(item.quantity<=b))
-        {
-            display(&item,i,j);
-            i++;
-            j++;
-            if ((j%20)==0)
-            {
-                gotoxy(27,47);
-                printf("Press any key to see more...........");
-                getch();
-                system("cls");
-                dis_con();
-                i=26;
-                continue;
-            }
-        }
-    }
-    getch();
-    if (i==26)
-    {
-        gotoxy(28,30);
-        printf(" No items found.");
-    }
-    getch();
-    d_search();
-    fclose(file);
-}
-
-/*function to display by rate*/
-void d_rate()
-{
-    int i,j=1;
-    float a,b;
-    FILE *file;
-    dis_con();
-    file=fopen("record.txt","rb");
-    rewind(file);
-    i=26;
-    gotoxy(16,20);;
-    printf("enter lower range: ");
-    scanf("%f",&a);
-    gotoxy(16,21);
-    printf("enter upper range: ");
-    scanf("%f",&b);
-    fflush(file);
-    while(fread(&item,sizeof(item),1,file))
-    {
-        if((item.rate>=a)&&(item.rate<=b))
-        {
-            display(&item,i,j);
-            i++;
-            j++;
-            if ((j%20)==0)
-            {
-                gotoxy(27,47);
-                printf("press any key to see more...........");
-                getch();
-                system("cls");
-                dis_con();
-                i=26;
-                continue;
-            }
-        }
-    }
-    getch();
-    if (i==26)
-    {
-        gotoxy(28,30);
-        printf(" no item found ");
-    }
-    getch();
-    fclose(file);
-    d_search();
-}
-
-/*function to display by code*/
-void d_code()
-{
-    int i,j=1;
-    char x[4]= {0};
-    FILE *file;
-    dis_con();
-    file=fopen("record.txt","rb");
-    rewind(file);
-    i=26;
-    gotoxy(16,20);;
-    printf("enter item code: ");
-    scanf("%s",x);
-    fflush(file);
-    while(fread(&item,sizeof(item),1,file))
-    {
-        if((strcmp(item.code,x)==0))
-        {
-            display(&item,i,j);
-            i++;
-            j++;
-            break;
-        }
-    }
-    if (i==26)
-    {
-        gotoxy(28,30);
-        printf("no item found");
-    }
-    getch();
-    fclose(file);
-    d_search();
-}
 
 /*function to display window for item display*/
 void dis_con()
@@ -664,10 +320,9 @@ void dis_con()
     printf("\n\n");
     gotoxy(30,11);
     printf("Medical Store");
-//textcolor(1);
+
     gotoxy(32,17);
     printf("RECORDS") ;
-//textcolor(8);
     gotoxy(18,23);
     printf ("SN   Item Name   Item Code      Rate     Quantity");
 }
@@ -682,70 +337,6 @@ void display(rec *item,int i,int j)
     printf("%14.2f",item->rate);
     printf("%11d",item->quantity);
 }
-
-/*function to delete records*/
-void del()
-{
-    int flag;
-    char x[ANS];
-    FILE *file,*file1;
-    system("cls");
-//textbackground(11);
-//textcolor(0);
-    window(23,51,25,34);
-    gotoxy(29,18);
-    printf("DELETE ARTICLES");
-    gotoxy(27,27);
-    printf("enter item code: ");
-    scanf("%s",x);
-    flag=check(x);
-    if(flag==0)
-    {
-        file1=fopen("record1.txt","ab");
-        file=fopen("record.txt","rb");
-        rewind(file);
-        while (fread(&item,sizeof (item),1,file))
-        {
-            if(strcmp(item.code,x)!=0)
-                fwrite(&item,sizeof(item),1,file1);
-        }
-        gotoxy(27,29);
-        printf("---item deleted---");
-        remove("record.txt");
-        rename("record1.txt","record.txt");
-    }
-    if (flag==1)
-    {
-        gotoxy(25,29);
-        printf("---item does not exist---");
-        gotoxy(30,31);
-        printf("TRY AGAIN");
-    }
-    fclose(file1);
-    fclose(file);
-    getch();
-    d_mainmenu();
-}
-
-/*function to check validity of code while editing and deleting*/
-int check(char x[ANS])
-{
-    FILE *file;
-    int flag=1;
-    file=fopen("record.txt","rb");
-    rewind(file);
-    while (fread(&item,sizeof (item),1,file))
-    {
-        if(strcmp(item.code,x)==0)
-        {
-            flag=0;
-            break;
-        }
-    }
-    fclose(file);
-    return flag;
-}
-
 /*function to display box*/
 void window(int a,int b,int c,int d)
 {
@@ -800,3 +391,5 @@ void window(int a,int b,int c,int d)
     gotoxy(b,d);
     printf("\xbc");
 }
+
+
